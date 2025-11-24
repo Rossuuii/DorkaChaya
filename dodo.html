@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Süße Hearts-App</title>
+<style>
+  body {
+    font-family: sans-serif;
+    text-align: center;
+    padding-top: 20vh;
+    font-size: 2rem;
+    margin: 0;
+    /* Pastellverlauf */
+    background: linear-gradient(135deg, #ffe6ef, #dfe9ff, #e7ffe7);
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
+
+    /* Zartes Herzmuster (SVG als Data-URI) */
+    background-image:
+      url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' fill='pink' opacity='0.25'>\
+<text x='10' y='40' font-size='40'>❤️</text>\
+</svg>");
+    background-repeat: repeat;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  #content-box {
+    backdrop-filter: blur(6px);
+    background: rgba(255,255,255,0.4);
+    padding: 2rem;
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  button {
+    margin-top: 1.5rem;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    border: none;
+    background: #ffd5e5;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+</style>
+</head>
+<body>
+<div id="content-box">
+  <div id="output">💖 Tippe auf den Button 💖</div>
+  <br />
+  <button onclick="generate()">Neues Herz</button>
+</div>
+
+<script>
+const messages = [
+  "Du bist toll! 💛",
+  "Du bist absolut rattenscharf! 💘",
+  "Lieblingsmensch 💓",
+  "Willst du Kopf?",
+  "Ich mag dich wirklich wirklich ganz schön arg. 💕",
+  "Ich denk an dich. 🌸",
+  "Du machst genug. Du bist genug. Du bist toll. Ich bin stolz auf dich.💖",
+  "Clash Royale Göttin 👑"
+];
+
+function generate() {
+  const out = document.getElementById('output');
+  out.textContent = messages[Math.floor(Math.random() * messages.length)];
+}
+</script>
+</body>
+</html>
