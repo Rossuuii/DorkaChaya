@@ -1,101 +1,289 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Süße Hearts-App</title>
 <style>
-  body {
-    font-family: sans-serif;
-    text-align: center;
-    padding-top: 20vh;
-    font-size: 2rem;
-    margin: 0;
-    /* Pastellverlauf */
-    background: linear-gradient(135deg, #ffe6ef, #dfe9ff, #e7ffe7);
-    background-size: 400% 400%;
-    animation: gradientShift 12s ease infinite;
+  /* small reset to remove leftover margins/paddings and make centering reliable */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Zartes Herzmuster (SVG als Data-URI) */
+  :root{
+    --accent: #d63384;
+    --bg1: #ffe6ef;
+    --bg2: #dfe9ff;
+    --bg3: #e7ffe7;
+    --card-bg: rgba(255,255,255,0.4);
+    --btn-bg: #ffd5e5;
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --nav-text: #4b4b4b;
+    --muted-border: rgba(0,0,0,0.06);
+  }
+
+  html,body { height: 100%; }
+
+  body {
+    font-family: var(--font);
+    text-align: center;
+    padding-top: 1.25rem; /* small top spacing so header isn't pushed down */
+    font-size: 1.25rem;
     background-image:
-      url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' fill='pink' opacity='0.25'>\
-<text x='10' y='40' font-size='40'>❤️</text>\
-</svg>");
-    background-repeat: repeat;
+      linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3)),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Ctext x='10' y='40' font-size='40' fill='pink' opacity='0.25'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E");
+    background-size: 400% 400%, 80px 80px;
+    background-repeat: no-repeat, repeat;
+    animation: gradientShift 12s ease infinite;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% { background-position: 0% 50%, 0 0; }
+    50% { background-position: 100% 50%, 0 0; }
+    100% { background-position: 0% 50%, 0 0; }
+  }
+
+  /* header layout change: brand stands alone, nav is minimal
+     add a centered max-width so header content is always perfectly centered */
+  header {
+    position: relative;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding-top: 0.4rem;
+    width: 100%;
+    max-width: 1100px;
+    margin-inline: auto; /* force header content to center within viewport */
+  }
+
+  .brand {
+    color: var(--accent);
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    justify-content: center;        /* centered and minimal */
+    align-items: center;
+    background: transparent;        /* minimal, no heavy backdrop */
+    padding: 0.25rem 0; /* remove horizontal padding that could offset layout */
+    box-shadow: none;
+    border-bottom: 1px solid var(--muted-border);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-inline: auto; /* keep the links centered inside the nav */
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--nav-text);
+    padding: 0.35rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color .14s ease, color .12s ease;
+  }
+  .nav-links a:hover,
+  .nav-links a:focus {
+    background-color: rgba(0,0,0,0.04);
+    color: var(--accent);
+    outline: none;
+  }
+
+  main {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;    /* place content closer to header */
+    padding-top: 1.25rem;
+    min-height: calc(100vh - 5.25rem);
   }
 
   #content-box {
     backdrop-filter: blur(6px);
-    background: rgba(255,255,255,0.4);
-    padding: 2rem;
+    background: var(--card-bg);
+    padding: 1.6rem;
     border-radius: 20px;
     display: inline-block;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    max-width: 720px;
+    min-width: 260px;
+    text-align: center;
+    /* animation + motion / accessibility helpers */
+    animation: floatIn var(--card-duration) cubic-bezier(.2,.8,.2,1) both;
+    will-change: transform, opacity;
   }
 
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(8px) scale(.997); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+
+  #output {
+    font-size: 1.25rem;
+    color: #333;
+    min-height: 2.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .controls {
+    margin-top: 0.9rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  /* ensure every button has same width and centered */
+  .controls button {
+    min-width: 160px;
+    width: 160px;
+    padding: 0.8rem 1rem;
+    transition: transform .18s cubic-bezier(.2,.9,.25,1), box-shadow .18s linear, background-color .12s linear;
+  }
+  .controls button:hover {
+    transform: translateY(calc(-1 * var(--button-lift))) scale(1.02);
+    box-shadow: 0 18px 36px rgba(214,51,132,0.12);
+  }
+  .controls button:active { transform: translateY(2px) scale(.995); }
+
   button {
-    margin-top: 1.5rem;
-    padding: 1rem 2rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
     border-radius: 12px;
     border: none;
-    background: #ffd5e5;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background: var(--btn-bg);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: transform .12s ease, box-shadow .12s ease, background-color .14s ease;
+  }
+  button:active { transform: translateY(1px); }
+  button:focus { outline: 3px solid rgba(214,51,132,0.18); }
+
+  /* keyboard focus is visually clear & subtle for accessibility */
+  :focus-visible { outline: 3px solid rgba(214,51,132,0.18); outline-offset: 2px; border-radius: 8px; }
+
+  @media (min-width: 700px) {
+    body { font-size: 1.5rem; }
+    .brand { font-size: 1.5rem; }
+  }
+
+  /* responsive adjustments for very small screens */
+  @media (max-width: 420px) {
+    .controls button { width: calc(100% - 48px); max-width: 240px; }
+    .controls { padding-inline: 24px; gap: 0.5rem; }
+  }
+
+  /* small animated hearts used by JS */
+  .floating-heart {
+    position: fixed;
+    pointer-events: none;
+    font-size: 20px;
+    transform-origin: center;
+    animation: heartFloat 1200ms cubic-bezier(.22,.8,.3,.95) forwards;
+    will-change: transform, opacity;
+    z-index: 10000;
+  }
+  @keyframes heartFloat {
+    0%   { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+    60%  { transform: translateY(-68px) scale(1.25) rotate(8deg); }
+    100% { opacity: 0; transform: translateY(-120px) scale(.8) rotate(-10deg); }
+  }
+
+  /* honour reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    #content-box, .controls button, .floating-heart { animation: none !important; transition: none !important; }
   }
 </style>
 </head>
 <body>
-  <h1 style="color: #d63384;">Rossi & Dorka</h1>
-  <nav style="
-    position: sticky;
-    top: 0;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(5px);
-    padding: 0.8rem 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    z-index: 1000;
-    font-family: sans-serif;
-    div a width: 30%;
-  ">
-    <div>
-        <a href="#output" style="margin-right: 1rem; text-decoration: none; color: #d63384;">Bearbeiten</a>
-        <a href="#!" style="margin-right: 1rem; text-decoration: none; color: #d63384;">Galerie</a>
-        <a href="#!" style="text-decoration: none; color: #d63384;">Termine</a>
-    </div>
-  </nav>
+  <header>
+    <!-- brand stands alone and centered -->
+    <h1 class="brand">Rossi &amp; Dorka</h1>
 
-<div id="content-box">
-  <div id="output">💖 Tippe auf den Button 💖</div>
-  <br />
-  <button onclick="generate()">Neues Herz</button>
-</div>
+    <!-- minimal, centered nav -->
+    <nav class="top-nav" aria-label="Hauptnavigation">
+      <div class="nav-links" role="navigation" aria-label="Sekundärnavigation">
+        <a href="#output">Bearbeiten</a>
+        <a href="#gallery">Galerie</a>
+        <a href="#events">Termine</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div id="content-box">
+      <div id="output" role="status" aria-live="polite">💖 Tippe auf den Button 💖</div>
+
+      <div class="controls">
+        <button id="new-heart">Neues Herz</button>
+      </div>
+    </div>
+  </main>
 
 <script>
-const messages = [
-  "Du bist toll! 💛",
-  "Du bist absolut rattenscharf! 💘",
-  "Lieblingsmensch 💓",
-  "Willst du Kopf?",
-  "Ich mag dich wirklich wirklich ganz schön arg. 💕",
-  "Ich denk an dich. 🌸",
-  "Du machst genug. Du bist genug. Du bist toll. Ich bin stolz auf dich.💖",
-  "Clash Royale Göttin 👑"
-];
+  // Kurz und resilient: zufällige Botschaften anzeigen, event listener statt inline onclick
+  const messages = [
+    "Du bist toll! 💛",
+    "Du bist absolut rattenscharf! 💘",
+    "Willst du eine Umarmung?",
+    "Ich mag dich wirklich wirklich ganz schön arg. 💕",
+    "Ich denk an dich. 🌸",
+    "Du machst genug. Du bist genug. Du bist toll. Ich bin stolz auf dich.💖",
+    "Clash Royale Göttin 👑",
+    "Du bist mein Lieblingsmensch auf der ganzen Welt! 🌍"
+  ];
 
-function generate() {
-  const out = document.getElementById('output');
-  out.textContent = messages[Math.floor(Math.random() * messages.length)];
-}
+  const outputEl = document.getElementById('output');
+  const btnNew = document.getElementById('new-heart');
+
+  function pickRandom(arr){
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function showMessage(){
+    if (!outputEl) return;
+    outputEl.textContent = pickRandom(messages);
+  }
+
+  // small visual confetti — spawns a few hearts near the button to give feedback
+  function spawnHearts(sourceEl, count = 6) {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const rect = sourceEl.getBoundingClientRect();
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement('span');
+      el.className = 'floating-heart';
+      el.textContent = ['💖','💗','💓','💘'][Math.floor(Math.random()*4)];
+      // randomize spawn around the button
+      const x = rect.left + rect.width/2 + (Math.random()*120 - 60);
+      const y = rect.top + (Math.random()*20 - 10);
+      el.style.left = Math.round(x) + 'px';
+      el.style.top  = Math.round(y) + 'px';
+      el.style.transform = `translate(-50%,0) scale(${0.85 + Math.random()*0.4}) rotate(${Math.random()*40-20}deg)`;
+      document.body.appendChild(el);
+      // remove after animation ends (1200ms)
+      setTimeout(() => el.remove(), 1400 + Math.floor(Math.random()*400));
+    }
+  }
+
+  btnNew?.addEventListener('click', (e) => { showMessage(); spawnHearts(e.currentTarget); });
+  btnNew?.addEventListener('keyup', (e) => { if (e.key === 'Enter') showMessage(); });
 </script>
 </body>
 </html>
